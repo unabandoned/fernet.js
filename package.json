@@ -1,10 +1,15 @@
 {
-  "name": "fernet",
+  "name": "@unabandoned/fernet",
   "version": "0.3.3",
   "description": "Javascript implementation of Fernet symmetric encryption https://github.com/kr/fernet-spec",
   "main": "fernet.js",
   "scripts": {
-    "test": "mocha"
+    "test": "node --test test/*.test.js",
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unabandoned/fernet.js.git"
   },
   "keywords": [
     "encryption",
@@ -13,16 +18,27 @@
   ],
   "author": "csquared",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unabandoned/fernet.js/issues"
+  },
+  "homepage": "https://github.com/unabandoned/fernet.js#readme",
   "dependencies": {
-    "crypto-js": "~4.2.0",
-    "urlsafe-base64": "1.0.0"
+    "@noble/ciphers": "^2.4.0",
+    "@noble/hashes": "^2.4.0"
   },
   "devDependencies": {
-    "browserify": "^17.0.1",
-    "buffer-browserify": "~0.2.2",
-    "chai": "^4.5.0",
-    "mocha": "^10.8.2",
-    "sinon": "^18.0.1",
-    "sinon-chai": "^3.7.0"
-  }
+    "@commitlint/cli": "21.2.2",
+    "@commitlint/config-conventional": "21.2.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "files": [
+    "fernet.js",
+    "lib"
+  ]
 }

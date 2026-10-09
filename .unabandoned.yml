@@ -1,0 +1,28 @@
+schema: 1
+
+package: "@unabandoned/fernet"
+
+upstream:
+  repo: csquared/fernet.js
+  reason: "last release 0.3.3 in April 2025, and still depends on crypto-js, which its own maintainers have discontinued"
+
+summary: >-
+  Fernet symmetric encryption (AES-128-CBC with HMAC-SHA256, per the Fernet
+  spec) for Node and the browser, with a synchronous API.
+
+why-forked: >-
+  CyberChef ships it at runtime, and it was abandoned while carrying crypto-js
+  (discontinued upstream), urlsafe-base64, and a require('crypto') that made
+  bundlers pull a whole crypto-browserify polyfill in just for 16 random bytes.
+  The fork does AES-CBC and HMAC with @noble/ciphers and @noble/hashes (both
+  actively maintained, both synchronous), base64 in-tree, and IVs from
+  globalThis.crypto.getRandomValues, so it needs no Node built-ins.
+
+used-by:
+  - consumer: TheTechNetwork/CyberChef
+    purpose: >-
+      backs the Fernet Encrypt and Fernet Decrypt operations
+
+status: active
+
+tags: [crypto, encryption, fernet, aes, hmac]
