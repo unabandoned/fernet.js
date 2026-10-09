@@ -1,17 +1,22 @@
 # Fernet.js
 
-![ci status](https://github.com/csquared/fernet.js/actions/workflows/node.js.yml/badge.svg?branch=master)
+![ci status](https://github.com/unabandoned/fernet.js/actions/workflows/ci.yml/badge.svg?branch=master)
 
 Javascript implementation of <a href="https://github.com/kr/fernet-spec">Fernet symmetric encryption</a>.
 
 Fernet is an opinionated way of using AES and HMAC authentication that makes
 shared-secret symmetric encryption simpler for communicating applications.
 
-Fernet.js uses browserify to provide a library that works
-in both node and the browser.
+This is `@unabandoned/fernet`, a maintained fork of
+[`fernet`](https://github.com/csquared/fernet.js). It works unchanged in
+Node (22.12+) and in browsers or bundlers: AES-CBC and HMAC-SHA256 come from
+[`@noble/ciphers`](https://github.com/paulmillr/noble-ciphers) and
+[`@noble/hashes`](https://github.com/paulmillr/noble-hashes), and IVs from
+`globalThis.crypto.getRandomValues`, so it needs no Node built-ins and no
+`crypto` polyfill.
 
-Instead of using TypedArrays I use Hex Strings and CryptoJS's `Hex.parse`
-to build up `CryptoJs.lib.WordArray` objects.
+Keys, IVs, cipher text and HMACs are `Uint8Array`s (the upstream package used
+`CryptoJS.lib.WordArray`); the `...Hex` string properties are unchanged.
 
 ## WARNING
 
@@ -19,23 +24,23 @@ to build up `CryptoJs.lib.WordArray` objects.
 
 However, you can use this library to encrypt/decrypt data server-side and decrypt data on a client.
 
-That being said, the only randomness used by this library without your control is a call to `crypto.randomBytes` to generate IVs.
-This function defaults to OpenSSL server-side and [browserify's random number generator implementation](https://github.com/crypto-browserify/crypto-browserify/blob/master/index.js)
-client-side.  The browserify implementation only uses real browser crypto or throws an error. (IE: no calls to `Math.random()`)
+That being said, the only randomness used by this library without your control is a call to
+`globalThis.crypto.getRandomValues` to generate IVs (the Web Crypto CSPRNG, in Node and in browsers).
 
 If you're planning on generating the secrets in the browser do yourself a favor and get an audit.
 
 ## Use
 
-### node.js
-```javascript
-var fernet = require('./fernet');
+```sh
+npm install @unabandoned/fernet
 ```
 
-### browser
-```html
-<script src="fernetBrowser.js"></script>
+```javascript
+var fernet = require('@unabandoned/fernet');
 ```
+
+To keep existing `require('fernet')` calls working, install it under the old
+name: `npm install fernet@npm:@unabandoned/fernet`.
 
 ## Fernet
 
@@ -66,9 +71,9 @@ from this instance of Fernet.
   /*
     {
       signingKeyHex: '730ff4c7af3d46923e8ed451ee813c87',
-      signingKey: [CryptoJS.lib.WordArray],
+      signingKey: Uint8Array(16),
       encryptionKeyHex: 'f790b0a226bc96a92de49b5e9c05e1ee',
-      encryptionKey: [CryptoJS.lib.WordArray]
+      encryptionKey: Uint8Array(16)
     }
   */
 ```
@@ -122,5 +127,5 @@ token.decode();
 
     > npm test
 
-Compiles new fernetBrowser.js via `browserify`,
-tests node lib with `mocha`, then opens test.html via `open`.
+Runs the suite with the built-in `node:test` runner, including the
+[Fernet spec](https://github.com/fernet/spec) generate and verify vectors.
